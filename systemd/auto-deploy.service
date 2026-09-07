@@ -1,0 +1,14 @@
+[Unit]
+Description=Auto-Deployment Daemon for App Server Repositories
+After=network.target
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/home/ubuntu/oracle-app-server
+ExecStart=/home/ubuntu/oracle-app-server/scripts/auto-deploy.sh daemon
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

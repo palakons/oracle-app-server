@@ -5,10 +5,10 @@ After=network.target
 [Service]
 Type=simple
 User=ubuntu
-WorkingDirectory=/var/www/alpha-trader-v2/backend
+WorkingDirectory=/var/www/alpha-trader-v2
 EnvironmentFile=/var/www/alpha-trader-v2/backend/.env
 Environment=PORT=8000
-ExecStart=/var/www/alpha-trader-v2/backend/venv/bin/python main.py
+ExecStart=/var/www/alpha-trader-v2/venv/bin/uvicorn backend.app.main:app --host 127.0.0.1 --port 8000
 Restart=always
 RestartSec=5
 
