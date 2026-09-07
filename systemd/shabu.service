@@ -1,0 +1,16 @@
+[Unit]
+Description=Shabu Nub Nub Application Service
+After=network.target
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/var/www/shabu_nub_nub
+EnvironmentFile=/var/www/shabu_nub_nub/.env
+Environment=PORT=3002
+ExecStart=/usr/bin/npm start
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

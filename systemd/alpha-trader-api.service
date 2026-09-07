@@ -1,0 +1,16 @@
+[Unit]
+Description=Alpha Trader v2 Python Backend Service
+After=network.target
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/var/www/alpha-trader-v2/backend
+EnvironmentFile=/var/www/alpha-trader-v2/backend/.env
+Environment=PORT=8000
+ExecStart=/var/www/alpha-trader-v2/backend/venv/bin/python main.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

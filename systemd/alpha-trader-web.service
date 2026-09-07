@@ -1,0 +1,16 @@
+[Unit]
+Description=Alpha Trader v2 Node Frontend Service
+After=network.target
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/var/www/alpha-trader-v2/frontend
+EnvironmentFile=/var/www/alpha-trader-v2/frontend/.env
+Environment=PORT=3000
+ExecStart=/usr/bin/npm start
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
