@@ -8,7 +8,7 @@ User=ubuntu
 WorkingDirectory=/var/www/shabu_nub_nub
 EnvironmentFile=/var/www/shabu_nub_nub/.env
 Environment=PORT=3002
-ExecStart=/usr/bin/npx serve -s dist -l 3002
+ExecStart=/var/www/shabu_nub_nub/node_modules/.bin/serve -s dist -l tcp://127.0.0.1:3002
 Restart=always
 RestartSec=5
 

@@ -1,0 +1,16 @@
+[Unit]
+Description=Longwarp Central Auth Service
+After=network.target postgresql.service
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/var/www/longwarp-auth
+EnvironmentFile=/var/www/longwarp-auth/.env
+Environment=PORT=4000
+ExecStart=/usr/bin/node /var/www/longwarp-auth/dist/server.js
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
