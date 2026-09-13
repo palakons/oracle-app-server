@@ -56,7 +56,7 @@ check_and_deploy_repo() {
 
   cd "$REPO_DIR" || return 1
 
-  git fetch origin main >/dev/null 2>&1
+  git fetch origin >/dev/null 2>&1
   LOCAL_HASH=$(git rev-parse HEAD 2>/dev/null)
   REMOTE_HASH=$(git rev-parse origin/main 2>/dev/null)
 

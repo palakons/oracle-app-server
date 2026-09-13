@@ -1,13 +1,13 @@
 [Unit]
-Description=Alpha Trader v2 Node Frontend Service
-After=network.target
+Description=Alpha Trader Next.js Dashboard UI
+After=network.target alpha-trader-api.service
 
 [Service]
 Type=simple
 User=ubuntu
 WorkingDirectory=/var/www/alpha-trader-v2/frontend
-EnvironmentFile=/var/www/alpha-trader-v2/frontend/.env
-Environment=PORT=3000
+Environment=PORT=3000 NODE_ENV=production
+EnvironmentFile=/var/www/alpha-trader-v2/frontend/.env.production
 ExecStart=/usr/bin/npm start
 Restart=always
 RestartSec=5

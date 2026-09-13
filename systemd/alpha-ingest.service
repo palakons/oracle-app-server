@@ -1,0 +1,11 @@
+[Unit]
+Description=Hourly OHLCV & Derivatives Ingestion from Binance
+After=network.target postgresql.service
+
+[Service]
+Type=oneshot
+User=ubuntu
+WorkingDirectory=/var/www/alpha-trader-v2
+Environment=PYTHONPATH=.
+EnvironmentFile=/var/www/alpha-trader-v2/.env
+ExecStart=/var/www/alpha-trader-v2/venv/bin/python scripts/backfill.py --days 2 --symbols BTC/USDT,ETH/USDT,SOL/USDT,BNB/USDT,AVAX/USDT

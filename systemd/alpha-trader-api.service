@@ -1,14 +1,14 @@
 [Unit]
-Description=Alpha Trader v2 Python Backend Service
-After=network.target
+Description=Alpha Trader FastAPI Backend API Server & Autonomous Scheduler
+After=network.target postgresql.service
 
 [Service]
 Type=simple
 User=ubuntu
 WorkingDirectory=/var/www/alpha-trader-v2
-EnvironmentFile=/var/www/alpha-trader-v2/backend/.env
-Environment=PORT=8000
-ExecStart=/var/www/alpha-trader-v2/venv/bin/uvicorn backend.app.main:app --host 127.0.0.1 --port 8000
+Environment=PYTHONPATH=. PORT=8000 OMP_NUM_THREADS=1
+EnvironmentFile=/var/www/alpha-trader-v2/.env
+ExecStart=/var/www/alpha-trader-v2/venv/bin/uvicorn backend.app.main:app --host 127.0.0.1 --port 8000 --workers 2
 Restart=always
 RestartSec=5
 
