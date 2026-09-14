@@ -7,7 +7,7 @@ Type=simple
 User=ubuntu
 WorkingDirectory=/var/www/alpha-trader-v2/frontend
 Environment=PORT=3000 NODE_ENV=production
-EnvironmentFile=-/var/www/alpha-trader-v2/frontend/.env.production
+EnvironmentFile=-/var/www/alpha-trader-v2/frontend/.env
 ExecStart=/usr/bin/npm start
 Restart=always
 RestartSec=5
