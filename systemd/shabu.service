@@ -11,6 +11,10 @@ Environment=PORT=3002
 ExecStart=/var/www/shabu_nub_nub/node_modules/.bin/serve -s dist -l tcp://127.0.0.1:3002
 Restart=always
 RestartSec=5
+ProtectSystem=full
+NoNewPrivileges=true
+ProtectHome=read-only
+ReadWritePaths=/var/www /tmp
 
 [Install]
 WantedBy=multi-user.target

@@ -11,6 +11,10 @@ Environment=PORT=3001
 ExecStart=/usr/bin/npm start
 Restart=always
 RestartSec=5
+ProtectSystem=full
+NoNewPrivileges=true
+ProtectHome=read-only
+ReadWritePaths=/var/www /tmp
 
 [Install]
 WantedBy=multi-user.target

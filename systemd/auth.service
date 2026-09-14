@@ -11,6 +11,10 @@ Environment=PORT=4000
 ExecStart=/usr/bin/node /var/www/longwarp-auth/dist/server.js
 Restart=always
 RestartSec=5
+ProtectSystem=full
+NoNewPrivileges=true
+ProtectHome=read-only
+ReadWritePaths=/var/www /tmp
 
 [Install]
 WantedBy=multi-user.target
