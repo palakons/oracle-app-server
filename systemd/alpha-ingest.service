@@ -7,7 +7,7 @@ Type=oneshot
 User=ubuntu
 WorkingDirectory=/var/www/alpha-trader-v2
 Environment=PYTHONPATH=.
-EnvironmentFile=/var/www/alpha-trader-v2/.env
+EnvironmentFile=-/var/www/alpha-trader-v2/.env
 ExecStart=/var/www/alpha-trader-v2/venv/bin/python scripts/backfill.py --days 2 --symbols BTC/USDT,ETH/USDT,SOL/USDT,BNB/USDT,AVAX/USDT
 ProtectSystem=full
 NoNewPrivileges=true

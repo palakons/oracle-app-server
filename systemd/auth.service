@@ -6,7 +6,7 @@ After=network.target postgresql.service
 Type=simple
 User=ubuntu
 WorkingDirectory=/var/www/longwarp-auth
-EnvironmentFile=/var/www/longwarp-auth/.env
+EnvironmentFile=-/var/www/longwarp-auth/.env
 Environment=PORT=4000
 ExecStart=/usr/bin/node /var/www/longwarp-auth/dist/server.js
 Restart=always
