@@ -108,7 +108,7 @@ run_check() {
 
   # 5. Infrastructure Repo (oracle-app-server)
   check_and_deploy_repo "/home/ubuntu/oracle-app-server" "Oracle App Server Infrastructure" \
-    "sudo cp systemd/*.service /etc/systemd/system/ && sudo systemctl daemon-reload && sudo cp nginx/*.conf /etc/nginx/sites-available/ && sudo nginx -t && sudo systemctl reload nginx" \
+    "sudo cp systemd/*.service systemd/*.timer /etc/systemd/system/ && sudo systemctl daemon-reload && sudo cp nginx/*.conf /etc/nginx/sites-available/ && sudo nginx -t && sudo systemctl reload nginx" \
     "" && CHANGED=0
 
   if [ $CHANGED -ne 0 ]; then

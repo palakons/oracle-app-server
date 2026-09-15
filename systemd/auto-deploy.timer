@@ -1,0 +1,10 @@
+[Unit]
+Description=Auto-Deployment 1-Minute Poll Timer
+
+[Timer]
+OnBootSec=1min
+OnUnitActiveSec=1min
+Persistent=true
+
+[Install]
+WantedBy=timers.target
