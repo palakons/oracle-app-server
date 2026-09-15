@@ -9,9 +9,8 @@ log() {
   printf "\n[%s] %s\n" "$(date -u +'%Y-%m-%dT%H:%M:%SZ')" "$1" | tee -a "$LOG_FILE"
 }
 
-# Heartbeat state tracking
-LAST_LOGGED_HOUR=""
-LAST_LOGGED_DAY=""
+# Heartbeat state tracking (persisted to file for systemd oneshot timer)
+STATE_FILE="/home/ubuntu/oracle-app-server/.auto-deploy-heartbeat"
 
 log_heartbeat() {
   local CURRENT_TIME=$(date -u +'%Y-%m-%d %H:%M:%S UTC')
@@ -19,14 +18,25 @@ log_heartbeat() {
   local CURRENT_HOUR=$(date -u +'%H')
   local CURRENT_MIN=$(date -u +'%M')
 
-  # New Day marker (Midnight UTC)
-  if [ "$CURRENT_DAY" != "$LAST_LOGGED_DAY" ] && [ -n "$LAST_LOGGED_DAY" ]; then
-    printf "\n[%s] === NEW DAY: %s ===\n" "$(date -u +'%Y-%m-%dT%H:%M:%SZ')" "$CURRENT_DAY" | tee -a "$LOG_FILE"
-    LAST_LOGGED_DAY="$CURRENT_DAY"
-    LAST_LOGGED_HOUR="$CURRENT_HOUR"
+  local LAST_LOGGED_DAY=""
+  local LAST_LOGGED_HOUR=""
+
+  if [ -f "$STATE_FILE" ]; then
+    read -r LAST_LOGGED_DAY LAST_LOGGED_HOUR < "$STATE_FILE"
+  else
+    printf "\n[%s] : " "$CURRENT_TIME" | tee -a "$LOG_FILE"
+    echo "$CURRENT_DAY $CURRENT_HOUR" > "$STATE_FILE"
     return
   fi
-  LAST_LOGGED_DAY="$CURRENT_DAY"
+
+  # New Day marker (Midnight UTC)
+  if [ "$CURRENT_DAY" != "$LAST_LOGGED_DAY" ] && [ -n "$LAST_LOGGED_DAY" ]; then
+    printf "\n[%s] === NEW DAY: %s ===\n[%s] | " "$CURRENT_TIME" "$CURRENT_DAY" "$CURRENT_TIME" | tee -a "$LOG_FILE"
+    LAST_LOGGED_DAY="$CURRENT_DAY"
+    LAST_LOGGED_HOUR="$CURRENT_HOUR"
+    echo "$LAST_LOGGED_DAY $LAST_LOGGED_HOUR" > "$STATE_FILE"
+    return
+  fi
 
   # Hourly or 6-Hourly marker (Top of the hour :00)
   if [ "$CURRENT_MIN" = "00" ] && [ "$CURRENT_HOUR" != "$LAST_LOGGED_HOUR" ]; then
@@ -41,6 +51,8 @@ log_heartbeat() {
     # Minute heartbeat dot
     printf "." | tee -a "$LOG_FILE"
   fi
+
+  echo "$CURRENT_DAY $LAST_LOGGED_HOUR" > "$STATE_FILE"
 }
 
 check_and_deploy_repo() {
@@ -56,12 +68,17 @@ check_and_deploy_repo() {
 
   cd "$REPO_DIR" || return 1
 
-  git fetch origin >/dev/null 2>&1
+  FETCH_OUTPUT=$(git fetch origin 2>&1)
+  if [ $? -ne 0 ]; then
+    log "[$REPO_NAME] git fetch failed: $FETCH_OUTPUT"
+    return 1
+  fi
+
   LOCAL_HASH=$(git rev-parse HEAD 2>/dev/null)
-  REMOTE_HASH=$(git rev-parse origin/main 2>/dev/null)
+  REMOTE_HASH=$(git rev-parse origin/main 2>/dev/null || git rev-parse origin/master 2>/dev/null)
 
   if [ -n "$LOCAL_HASH" ] && [ -n "$REMOTE_HASH" ] && [ "$LOCAL_HASH" != "$REMOTE_HASH" ]; then
-    log "New commit detected for $REPO_NAME ($LOCAL_HASH -> $REMOTE_HASH). Pulling and deploying..."
+    log "New commit detected for $REPO_NAME (${LOCAL_HASH:0:7} -> ${REMOTE_HASH:0:7}). Pulling and deploying..."
     git pull origin main >> "$LOG_FILE" 2>&1
 
     if [ -n "$BUILD_CMD" ]; then
